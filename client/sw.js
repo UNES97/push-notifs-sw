@@ -14,7 +14,7 @@ const urlB64ToUint8Array = base64String => {
 };
 
 const saveSubscription = async subscription => {
-    const SERVER_URL = "http://localhost:4000/save-subscription";
+    const SERVER_URL = "http://localhost:3000/save-subscription";
     const response = await fetch(SERVER_URL, {
         method: "post",
         headers: {
@@ -25,14 +25,13 @@ const saveSubscription = async subscription => {
     return response.json();
 };
 
-self.addEventListener("install", async () => {
-    // This will be called only once when the service worker is installed for first time.
+self.addEventListener("activate", async () => {
     try {
         const applicationServerKey = urlB64ToUint8Array(
             "BJhoEPKWyZK29AS51-xxJ9HMWOHc27t9ueZs1MNRO4nlqspUWS54LarUGyPonZDZojFBgVnE3CNLIwWbQSftKw8"
         );
         const options = { applicationServerKey, userVisibleOnly: true };
-        console.log('Installing');
+        console.log('Activating...');
         const subscription = await self.registration.pushManager.subscribe(options);
         const response = await saveSubscription(subscription);
         console.log(response);
@@ -43,7 +42,7 @@ self.addEventListener("install", async () => {
 
 self.addEventListener("push", function (event) {
     if (event.data) {
-        console.log("Push event!! ", event.data.text());
+        self.registration.showNotification("DAMN BOI!", { body: event.data.text() })
     } else {
         console.log("Push event but no data");
     }
