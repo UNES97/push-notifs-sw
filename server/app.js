@@ -30,22 +30,26 @@ webpush.setVapidDetails(
     vapidKeys.privateKey
 )
 
-const sendNotification = (subscription, dataToSend) => {
-    webpush.sendNotification(subscription, dataToSend);
-}
+const sendNotification = async (subscription, payload) => {
+    try {
+        await webpush.sendNotification(subscription, payload);
+    } catch (error) {
+        if (error.statusCode === 410) {
+            console.error("Push subscription has unsubscribed or expired:", error.body);
+        } else {
+            console.error("Error sending push notification:", error);
+        }
+    }
+};
 
 app.get('/send-notification', (req, res) => {
-    try {
-        const message = 'BAKA mo ichigei';
-        console.log(dummyDb);
-        dummyDb.forEach(subscription => {
-            sendNotification(subscription, message);
-        });
+    const message = 'BAKA mo ichigei';
+    console.log(dummyDb);
+    dummyDb.forEach(subscription => {
+        sendNotification(subscription, message);
+    });
 
-        res.json({ message: 'Message sent' });
-    } catch (error) {
-        res.json({ message: error.message });
-    }
+    res.json({ message: 'Message sent' });
 })
 
 app.get('/', (req, res) => res.send('Hello Unes 1997'));

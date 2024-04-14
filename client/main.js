@@ -27,11 +27,11 @@ window.addEventListener('load', () => {
     };
 
     const unregisterServiceWorker = async () => {
-        const registrations = await navigator.serviceWorker.getRegistrations();
-        registrations.forEach(registration => {
-            registration.unregister();
+        navigator.serviceWorker.getRegistrations().then(registrations => {
+            for (const registration of registrations) {
+                registration.unregister();
+            } 
         });
-        console.log("Service worker unregistered successfully.");
     };
 
     const permissionBtn = document.getElementById('permission-btn');
