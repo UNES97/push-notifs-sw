@@ -7,7 +7,7 @@ app.use(cors());
 app.use(bodyParser.json());
 const port = 3000;
 
-const dummyDb = { subscription: null }
+const dummyDb = [];
 const vapidKeys = {
     publicKey:
         'BJhoEPKWyZK29AS51-xxJ9HMWOHc27t9ueZs1MNRO4nlqspUWS54LarUGyPonZDZojFBgVnE3CNLIwWbQSftKw8',
@@ -15,7 +15,7 @@ const vapidKeys = {
 }
 
 const saveToDatabase = async subscription => {
-    dummyDb.subscription = subscription
+    dummyDb.push(subscription) 
 }
 
 app.post('/save-subscription', async (req, res) => {
@@ -35,11 +35,17 @@ const sendNotification = (subscription, dataToSend) => {
 }
 
 app.get('/send-notification', (req, res) => {
-    const subscription = dummyDb.subscription;
-    const message = 'Hello World';
-    sendNotification(subscription, message);
+    try {
+        const message = 'BAKA mo ichigei';
+        console.log(dummyDb);
+        dummyDb.forEach(subscription => {
+            sendNotification(subscription, message);
+        });
 
-    res.json({ message: 'Message sent' });
+        res.json({ message: 'Message sent' });
+    } catch (error) {
+        res.json({ message: error.message });
+    }
 })
 
 app.get('/', (req, res) => res.send('Hello Unes 1997'));

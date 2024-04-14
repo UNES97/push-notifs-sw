@@ -26,8 +26,21 @@ window.addEventListener('load', () => {
         const swRegistration = await registerServiceWorker();
     };
 
+    const unregisterServiceWorker = async () => {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        registrations.forEach(registration => {
+            registration.unregister();
+        });
+        console.log("Service worker unregistered successfully.");
+    };
+
     const permissionBtn = document.getElementById('permission-btn');
     permissionBtn.addEventListener('click', () => {
         main();
+    });
+
+    const unregisterBtn = document.getElementById('unregister-btn');
+    unregisterBtn.addEventListener('click', () => {
+        unregisterServiceWorker();
     });
 });
